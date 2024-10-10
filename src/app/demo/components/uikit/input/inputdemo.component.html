@@ -49,6 +49,7 @@
 			<h5>AutoComplete</h5>
 			<p-autoComplete [(ngModel)]="selectedCountryAdvanced" [suggestions]="filteredCountries" (completeMethod)="filterCountry($event)" field="name" [dropdown]="true">
 			</p-autoComplete>
+            {{selectedCountryAdvanced | json}}
 
 			<h5>Calendar</h5>
 			<p-calendar [showIcon]="true" inputId="icon"></p-calendar>
@@ -164,7 +165,7 @@
 			<p-selectButton [options]="paymentOptions" [(ngModel)]="valSelect2" [multiple]="true" optionLabel="name"></p-selectButton>
 		</div>
 	</div>
-	
+
 	<div class="col-12">
 		<div class="card">
 			<h5>InputGroup</h5>

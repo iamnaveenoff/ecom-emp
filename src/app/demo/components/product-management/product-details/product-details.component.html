@@ -75,7 +75,7 @@
                                         </td>
                                         <td style="width:14%; min-width:8rem;">
                                             <span class="p-column-title">Price</span>
-                                            {{product.price | currency:'USD'}}
+                                            {{product.price | currency:'INR'}}
                                         </td>
                                         <td style="width:14%; min-width:10rem;">
                                             <span class="p-column-title">Category</span>
@@ -112,13 +112,24 @@
                                         <label for="description">Description</label>
                                         <textarea id="description" formControlName="description" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20"></textarea>
                                     </div>
+                                        <div class="field">
+                                            <label for="users">Users</label>
+                                            <input id="users" formControlName="publishedBy"  [(ngModel)]="product.publishedBy" pInputText>
+                                        </div>
                                     <div class="field">
                                          <label for="contactNumber">Contact Number</label>
-                                         <input id="contactNumber" formControlName="contactNumber" pInputTextarea [(ngModel)]="product.contactNumber" required >
+                                         <input id="contactNumber" formControlName="contactNumber" pInputText [(ngModel)]="product.contactNumber" required >
                                     </div>
                                     <div class="field">
                                         <label for="category">Category</label>
-                                        <p-dropdown id="category" [options]="dropdownItems" optionLabel="label" placeholder="Select a Category" [(ngModel)]="product.category" formControlName="category"></p-dropdown>
+                                        <p-dropdown id="category" [options]="categoryList" optionLabel="categoryName" optionValue="categoryId" [showClear]="true"  placeholder="Select a Category" [(ngModel)]="product.category" formControlName="categoryId"></p-dropdown>
+                                        <!--<p-autoComplete
+                                            id="category"
+                                            [(ngModel)]="product.category"
+                                            [forceSelection]="true"
+                                            [suggestions]="filteredCountries"
+                                            (completeMethod)="filterCountry($event)"
+                                            optionLabel="name" />-->
                                     </div>
                                     <div class="formgrid grid">
                                         <div class="field col">
@@ -127,6 +138,11 @@
                                         </div>
                                     </div>
                                     </form>
+
+                                    <div class="pt3">
+                                        <div class="b">Form Value</div>
+                                        <pre>{{updateForm.value | json}}</pre>
+                                    </div>
                                 </ng-template>
                                 <ng-template pTemplate="footer">
                                     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>
