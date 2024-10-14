@@ -61,7 +61,7 @@ export class ProductDetailsComponent implements OnInit {
     updateForm!: FormGroup;
     deleteProductsDialog: boolean = false;
     deleteProductDialog: boolean = false;
-
+    uploadedFiles: any[] = [];
     categoryList: any;
 
     userList: any;
@@ -72,18 +72,19 @@ export class ProductDetailsComponent implements OnInit {
     ngOnInit(): void {
        this.getAllProducts();
         this.updateForm = new FormGroup({
-            productName: new FormControl(this.product.productName, [Validators.required]),
-            categoryId: new FormControl(this.product.category, [Validators.required]),
-            description: new FormControl(this.product.description, [Validators.required]),
-            contactNumber: new FormControl(this.product.contactNumber, [Validators.required]),
-            publishedBy: new FormControl(this.product.publishedBy, [Validators.required]),
-            price: new FormControl(this.product.price, [Validators.required]),
+            productImage: new FormControl('', ),
+            productName: new FormControl('', [Validators.required]),
+            categoryId: new FormControl('', [Validators.required]),
+            publishedBy: new FormControl(''),
+            description: new FormControl('', [Validators.required]),
+            contactNumber: new FormControl('', [Validators.required]),
+            price: new FormControl('', [Validators.required]),
         });
 
         this.apiService.getCategories().subscribe(
             (response: any) => {
                 if (response.statusCode === 200 && response.data) {
-                    this.categories = response.data;
+                    this.categories = response.data || [];
                     this.categoryList = this.categories.map((category: Category) => ({
                         categoryName: category.categoryName,
                         categoryId: category.categoryId
@@ -143,23 +144,6 @@ export class ProductDetailsComponent implements OnInit {
         // Clone the selected product object
         this.product = {...product};
 
-        // Find the matching category by categoryId and set it for the form
-        const selectedCategory = this.categories.find(cat => cat.categoryName === product.category);
-        if (selectedCategory) {
-            // Preselect the category in the form with categoryId
-            this.updateForm.patchValue({
-                categoryId: selectedCategory.categoryName
-            });
-        }
-
-        // Patch other product details in the form
-        this.updateForm.patchValue({
-            productName: this.product.productName,
-            description: this.product.description,
-            contactNumber: this.product.contactNumber,
-            price: this.product.price,
-            publishedBy: this.product.publishedBy
-        });
 
         // Open the dialog to edit the product
         this.productDialog = true;
@@ -172,6 +156,11 @@ export class ProductDetailsComponent implements OnInit {
 
     saveProduct() {
         this.submitted = true;
+        console.log(this.updateForm);
+        console.log(this.updateForm.errors);
+        Object.keys(this.updateForm.controls).forEach(key => {
+            console.log(key, this.updateForm.get(key)?.errors);
+        });
 
         if (this.updateForm.valid) {  // Ensure the form is valid before proceeding
             const updatedProduct = new FormData();
@@ -181,6 +170,11 @@ export class ProductDetailsComponent implements OnInit {
             updatedProduct.append('categoryId', this.updateForm.get('categoryId')?.value);  // Correct category ID
             updatedProduct.append('price', this.updateForm.get('price')?.value);
             updatedProduct.append('publishedBy', this.updateForm.get('publishedBy')?.value);
+
+            // Append image if selected
+            if (this.imageFile) {
+                updatedProduct.append('productImage', this.imageFile);
+            }
 
             // If it's an existing product, update it
             if (this.product.productId) {
@@ -192,8 +186,8 @@ export class ProductDetailsComponent implements OnInit {
                             detail: 'Product Updated',
                             life: 3000
                         });
-                        this.productDialog = false;
                         this.getAllProducts();
+                        this.productDialog = false;
 
                     },
                     error: (err) => {
@@ -202,6 +196,28 @@ export class ProductDetailsComponent implements OnInit {
                             severity: 'error',
                             summary: 'Error',
                             detail: 'Product Update Failed',
+                            life: 3000
+                        });
+                    }
+                });
+            }else {
+                // Create product API
+                this.apiService.createProduct(updatedProduct).subscribe({
+                    next: (response) => {
+                        this.messageService.add({
+                            severity: 'success',
+                            summary: 'Product Created',
+                            detail: 'The product has been successfully created.',
+                            life: 3000
+                        });
+                        this.getAllProducts();
+                        this.productDialog = false;
+                    },
+                    error: (error) => {
+                        this.messageService.add({
+                            severity: 'error',
+                            summary: 'Creation Failed',
+                            detail: 'Error creating product.',
                             life: 3000
                         });
                     }
@@ -265,6 +281,7 @@ export class ProductDetailsComponent implements OnInit {
     }
 
 
+    // Image upload handler
     onUpload(event: any) {
         const file = event.files[0];
         if (file) {
@@ -274,7 +291,7 @@ export class ProductDetailsComponent implements OnInit {
             reader.readAsDataURL(file);
         }
 
-        this.messageService.add({severity: 'info', summary: 'Success', detail: 'File Uploaded'});
+        this.messageService.add({severity: 'info', summary: 'Image Uploaded', detail: 'File successfully uploaded.'});
     }
 
 

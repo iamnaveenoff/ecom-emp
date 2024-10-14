@@ -30,7 +30,7 @@ export class AppMenuComponent implements OnInit {
                 label: 'Product Management',
                 items: [
                     {label: 'Add Product', icon: 'pi pi-shopping-bag', routerLink: ['/productManagement/productDetails']},
-                    {label: 'Add Category', icon: 'pi pi-tags', routerLink: ['/']}
+                    {label: 'Add Category', icon: 'pi pi-tags', routerLink: ['/productManagement/categoryDetails']}
                 ]
             }
         ];

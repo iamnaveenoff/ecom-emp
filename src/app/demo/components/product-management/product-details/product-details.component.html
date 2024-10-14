@@ -14,12 +14,12 @@
                                   </ng-template>
 
                                   <ng-template pTemplate="right">
-                                      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>
-                                      <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>
+<!--                                      <p-fileUpload mode="basic" accept="image/*" [maxFileSize]="1000000" label="Import" chooseLabel="Import" class="mr-2 inline-block"></p-fileUpload>-->
+<!--                                      <button pButton pRipple label="Export" icon="pi pi-upload" class="p-button-help" (click)="dt.exportCSV()"></button>-->
                                   </ng-template>
                               </p-toolbar>
                             <p-table #dt [value]="products" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                                     [globalFilterFields]="['name','country.name','representative.name','status']"
+                                     [globalFilterFields]="['productId','productName','publishedBy','contactNumber','price','category']"
                                      [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
                                      currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
                                      [(selection)]="selectedProducts" selectionMode="multiple" [rowHover]="true"
@@ -47,6 +47,7 @@
                                         <th pSortableColumn="contactNumber">Contact Number <p-sortIcon field="contactNumber"></p-sortIcon></th>
                                         <th pSortableColumn="price">Price <p-sortIcon field="price"></p-sortIcon></th>
                                         <th pSortableColumn="category">Category <p-sortIcon field="category"></p-sortIcon></th>
+                                        <th pSortableColumn="published">Status <p-sortIcon field="published"></p-sortIcon></th>
                                         <th></th>
                                     </tr>
                                 </ng-template>
@@ -63,7 +64,7 @@
                                             {{product.productName}}
                                         </td>
                                         <td style="width:14%; min-width:10rem;"><span class="p-column-title">Image</span>
-                                            <img [src]="'data:image/jpeg;base64,' + product.image"  [alt]="product.productName" width="100" class="shadow-4" />
+                                            <img [src]="'data:image/jpeg;base64,' + product.productImage"  [alt]="product.productName" width="100" class="shadow-4" />
                                         </td>
                                         <td style="width:14%; min-width:10rem;">
                                             <span class="p-column-title">Published By</span>
@@ -81,6 +82,11 @@
                                             <span class="p-column-title">Category</span>
                                             {{product.categoryName}}
                                         </td>
+                                        <td style="width:14%; min-width:10rem;">
+                                            <span class="p-column-title">Status</span>
+                                            <span *ngIf="product.published">Active</span>
+                                            <span *ngIf="!product.published">Inactive</span>
+                                        </td>
                                         <td>
                                             <div class="flex">
                                                 <button pButton pRipple icon="pi pi-pencil" class="p-button-rounded p-button-success mr-2" (click)="editProduct(product)"></button>
@@ -94,15 +100,28 @@
                             <p-dialog [(visible)]="productDialog" [style]="{width: '450px'}" header="Product Details" [modal]="true" class="p-fluid">
                                 <ng-template pTemplate="content">
                                     <form [formGroup]="updateForm">
-                                    <p-fileUpload *ngIf="!product.image" name="basic"  (onUpload)="onUpload($event)"
-                                                  [multiple]="true" accept="image/*" [maxFileSize]="1000000">
-                                        <ng-template pTemplate="content">
-                                            <ul *ngIf="uploadedFiles.length">
-                                                <li *ngFor="let file of uploadedFiles">{{file.name}} - {{file.size}} bytes</li>
-                                            </ul>
-                                        </ng-template>
-                                    </p-fileUpload>
-                                    <img [src]="'data:image/jpeg;base64,' + product.image"  [alt]="product.productName"  width="150" class="mt-0 mx-auto mb-5 block shadow-2" *ngIf="product.image">
+                                        <div class="field"  *ngIf="!product.productImage">
+                                            <label for="imageUpload">Upload Image</label>
+                                            <p-fileUpload
+                                                formControlName="productImage"
+                                                id="imageUpload"
+                                                name="image"
+                                                customUpload="true"
+                                                (uploadHandler)="onUpload($event)"
+                                                accept="image/*"
+                                                maxFileSize="5000000"
+                                                [auto]="true"
+                                                mode="basic"
+                                                chooseLabel="Choose Image">
+                                            </p-fileUpload>
+                                        </div>
+
+                                        <!-- Preview the selected image -->
+                                        <div *ngIf="imagePreview" class="image-preview">
+                                            <img [src]="imagePreview" alt="Image Preview"  width="100px" height="100px" style="object-fit: cover; display: block; margin: 0 auto;"/>
+                                        </div>
+
+                                    <img [src]="'data:image/jpeg;base64,' + product.productImage"  [alt]="product.productName"  width="150" class="mt-0 mx-auto mb-5 block shadow-2" *ngIf="product.productImage">
                                     <div class="field">
                                         <label for="name">Name</label>
                                         <input type="text" pInputText id="name" formControlName="productName" [(ngModel)]="product.productName" required autofocus [ngClass]="{'ng-invalid ng-dirty' : submitted && !product.productName}"/>
@@ -112,24 +131,17 @@
                                         <label for="description">Description</label>
                                         <textarea id="description" formControlName="description" pInputTextarea [(ngModel)]="product.description" required rows="3" cols="20"></textarea>
                                     </div>
-                                        <div class="field">
-                                            <label for="users">Users</label>
-                                            <input id="users" formControlName="publishedBy"  [(ngModel)]="product.publishedBy" pInputText>
-                                        </div>
+                                    <div class="field"  *ngIf="product.productImage">
+                                        <label for="users">Users</label>
+                                        <input id="users" formControlName="publishedBy"  [(ngModel)]="product.publishedBy" pInputText>
+                                    </div>
                                     <div class="field">
                                          <label for="contactNumber">Contact Number</label>
                                          <input id="contactNumber" formControlName="contactNumber" pInputText [(ngModel)]="product.contactNumber" required >
                                     </div>
                                     <div class="field">
                                         <label for="category">Category</label>
-                                        <p-dropdown id="category" [options]="categoryList" optionLabel="categoryName" optionValue="categoryId" [showClear]="true"  placeholder="Select a Category" [(ngModel)]="product.category" formControlName="categoryId"></p-dropdown>
-                                        <!--<p-autoComplete
-                                            id="category"
-                                            [(ngModel)]="product.category"
-                                            [forceSelection]="true"
-                                            [suggestions]="filteredCountries"
-                                            (completeMethod)="filterCountry($event)"
-                                            optionLabel="name" />-->
+                                        <p-dropdown id="category" [options]="categoryList" optionLabel="categoryName" optionValue="categoryId" [showClear]="true"  placeholder="Select a Category" [(ngModel)]="product.categoryId" formControlName="categoryId"></p-dropdown>
                                     </div>
                                     <div class="formgrid grid">
                                         <div class="field col">
@@ -138,11 +150,6 @@
                                         </div>
                                     </div>
                                     </form>
-
-                                    <div class="pt3">
-                                        <div class="b">Form Value</div>
-                                        <pre>{{updateForm.value | json}}</pre>
-                                    </div>
                                 </ng-template>
                                 <ng-template pTemplate="footer">
                                     <button pButton pRipple label="Cancel" icon="pi pi-times" class="p-button-text" (click)="hideDialog()"></button>

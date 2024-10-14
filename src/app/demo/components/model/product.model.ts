@@ -4,8 +4,9 @@ export interface Product {
   description?: string;
   price?: number;
   contactNumber?: string;
-  image?: string;
-  category?: string;
+  productImage?: string;
+  categoryName?: string;
+  categoryId?: number;
   publishedBy?: string;
   email?: string;
   published?: boolean;

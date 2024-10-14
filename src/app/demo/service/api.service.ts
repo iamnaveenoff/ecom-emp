@@ -45,7 +45,6 @@ export class ApiService {
     // Users: Get all users
     getUsers(): Observable<any[]> {
         return this.http.get<any[]>(this.apiUrl + 'user/getAllUsers').pipe(
-            tap(response => console.log('Get Users response:', response)),
             catchError(error => {
                 console.error('Get Users error:', error);
                 return throwError(error);
@@ -55,7 +54,7 @@ export class ApiService {
 
     // Product: Create a new product
     createProduct(product: any): Observable<any> {
-        return this.http.post(this.apiUrl + 'products', product).pipe(
+        return this.http.post(this.apiUrl + 'products/create', product).pipe(
             tap(response => console.log('Create product response:', response)),
             catchError(error => {
                 console.error('Create product error:', error);
@@ -67,7 +66,6 @@ export class ApiService {
     // Product: Get all products
     getProducts(): Observable<any[]> {
         return this.http.get<any[]>(this.apiUrl + 'products/getAllProducts').pipe(
-            tap(response => console.log('Get products response:', response)),
             catchError(error => {
                 console.error('Get products error:', error);
                 return throwError(error);
@@ -78,7 +76,6 @@ export class ApiService {
     // Product: Get a product by ID
     getProductById(id: string): Observable<any> {
         return this.http.get<any>(this.apiUrl + `products/${id}`).pipe(
-            tap(response => console.log('Get product by ID response:', response)),
             catchError(error => {
                 console.error('Get product by ID error:', error);
                 return throwError(error);
@@ -104,7 +101,6 @@ export class ApiService {
     // Product: Delete a product
     deleteProduct(id: number): Observable<any> {
         return this.http.delete(this.apiUrl + `products/${id}`).pipe(
-            tap(response => console.log('Delete product response:', response)),
             catchError(error => {
                 console.error('Delete product error:', error);
                 return throwError(error);
@@ -114,8 +110,7 @@ export class ApiService {
 
     // Category: Create a new category
     createCategory(category: any): Observable<any> {
-        return this.http.post(this.apiUrl + 'categories', category).pipe(
-            tap(response => console.log('Create category response:', response)),
+        return this.http.post(this.apiUrl + 'categories/create', category).pipe(
             catchError(error => {
                 console.error('Create category error:', error);
                 return throwError(error);
@@ -126,7 +121,6 @@ export class ApiService {
     // Category: Get all categories
     getCategories(): Observable<any[]> {
         return this.http.get<any[]>(this.apiUrl + 'categories/listAllCategory').pipe(
-            tap(response => console.log('Get categories response:', response)),
             catchError(error => {
                 console.error('Get categories error:', error);
                 // Handle the error here, e.g., display an error message to the user
@@ -138,7 +132,6 @@ export class ApiService {
     // Category: Get a category by ID
     getCategoryById(id: string): Observable<any> {
         return this.http.get<any>(this.apiUrl + `categories/${id}`).pipe(
-            tap(response => console.log('Get category by ID response:', response)),
             catchError(error => {
                 console.error('Get category by ID error:', error);
                 return throwError(error);
@@ -147,7 +140,7 @@ export class ApiService {
     }
 
     // Category: Update a category
-    updateCategory(id: string, category: any): Observable<any> {
+    updateCategory(id: number, category: any): Observable<any> {
         return this.http.put(this.apiUrl + `categories/${id}`, category).pipe(
             tap(response => console.log('Update category response:', response)),
             catchError(error => {
@@ -158,7 +151,7 @@ export class ApiService {
     }
 
     // Category: Delete a category
-    deleteCategory(id: string): Observable<any> {
+    deleteCategory(id: number): Observable<any> {
         return this.http.delete(this.apiUrl + `categories/${id}`).pipe(
             tap(response => console.log('Delete category response:', response)),
             catchError(error => {
