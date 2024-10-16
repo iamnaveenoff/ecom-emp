@@ -67,7 +67,7 @@
                         <ng-template let-products pTemplate="gridItem">
                             <div class="grid grid-nogutter">
                                 <div class="col-12 md:col-4" *ngFor="let product of products">
-                                    <div class="card m-3 border-1 surface-border">
+                                    <div class="card m-3 border-1 surface-border" [routerLink]="['/productDetails', product.productId]">
                                         <div class="flex flex-wrap gap-2 align-items-center justify-content-between mb-2">
                                             <div class="flex align-items-center">
                                                 <i class="pi pi-tag mr-2"></i>

@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ButtonModule} from "primeng/button";
 import {RippleModule} from "primeng/ripple";
 import {StyleClassModule} from "primeng/styleclass";
-import {Router} from "@angular/router";
+import {Router, RouterLink} from "@angular/router";
 import {ApiService} from "../../service/api.service";
 import {LayoutService} from "../../../layout/service/app.layout.service";
 import {CurrencyPipe, NgForOf} from "@angular/common";
@@ -23,7 +23,8 @@ import {SelectItem} from "primeng/api";
         DataViewModule,
         DropdownModule,
         InputTextModule,
-        NgForOf
+        NgForOf,
+        RouterLink
     ],
   templateUrl: './product-list.component.html',
   styleUrl: './product-list.component.scss'

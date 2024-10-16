@@ -23,7 +23,7 @@ export class AppMenuComponent implements OnInit {
             }, {
                 label: 'User Management',
                 items: [
-                    {label: 'all Users', icon: 'pi pi-users', routerLink: ['/']}
+                    {label: 'all Users', icon: 'pi pi-users', routerLink: ['/userManagement/usersList']}
                 ]
             },
             {

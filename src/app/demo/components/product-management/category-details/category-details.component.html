@@ -20,9 +20,9 @@
                             </ng-template>
                         </p-toolbar>
                         <p-table #dt [value]="categories" [columns]="cols" responsiveLayout="scroll" [rows]="10"
-                                 [globalFilterFields]="['productId','productName','publishedBy','contactNumber','price','category']"
+                                 [globalFilterFields]="['categoryId','categoryName','status']"
                                  [paginator]="true" [rowsPerPageOptions]="[10,20,30]" [showCurrentPageReport]="true"
-                                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
+                                 currentPageReportTemplate="Showing {first} to {last} of {totalRecords} categories"
                                  [(selection)]="selectedCategories" selectionMode="multiple" [rowHover]="true"
                                  dataKey="id">
 

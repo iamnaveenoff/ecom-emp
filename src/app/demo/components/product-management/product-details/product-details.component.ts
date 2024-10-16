@@ -17,7 +17,7 @@ import {InputTextareaModule} from "primeng/inputtextarea";
 import {InputNumberModule} from "primeng/inputnumber";
 import {Category} from "../../model/category.model";
 import {DropdownModule} from "primeng/dropdown";
-import {UserModel} from "../../model/user.model";
+import {User} from "../../model/user.model";
 import {AutoCompleteModule} from "primeng/autocomplete";
 
 @Component({
@@ -100,9 +100,9 @@ export class ProductDetailsComponent implements OnInit {
             (response: any) => {
                 if (response.statusCode === 200 && response.data) {
                     // this.categories = response.data;
-                    this.userList = response.data.map((user: UserModel) => ({
+                    this.userList = response.data.map((user: User) => ({
                         label: user.name,
-                        value: user.id
+                        value: user.userId
                     }));
                 }
             },
@@ -156,11 +156,11 @@ export class ProductDetailsComponent implements OnInit {
 
     saveProduct() {
         this.submitted = true;
-        console.log(this.updateForm);
+       /* console.log(this.updateForm);
         console.log(this.updateForm.errors);
         Object.keys(this.updateForm.controls).forEach(key => {
             console.log(key, this.updateForm.get(key)?.errors);
-        });
+        });*/
 
         if (this.updateForm.valid) {  // Ensure the form is valid before proceeding
             const updatedProduct = new FormData();

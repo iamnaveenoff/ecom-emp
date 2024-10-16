@@ -4,7 +4,7 @@ import {Observable, tap, throwError} from "rxjs";
 import {catchError} from "rxjs/operators";
 import {AuthService} from "./AuthService.service";
 import {SigninResponse} from "../components/model/Signin.model";
-import {UserModel} from "../components/model/user.model";
+import {User} from "../components/model/user.model";
 import {Product} from "../components/model/product.model";
 
 @Injectable({
@@ -32,7 +32,7 @@ export class ApiService {
     }
 
     // Authentication: Sign up
-    register(user: UserModel): Observable<any> {
+    register(user: User): Observable<any> {
         return this.http.post(this.apiUrl + 'auth/signup', user).pipe(
             tap(response => console.log('Signup response:', response)),
             catchError(error => {
@@ -47,6 +47,26 @@ export class ApiService {
         return this.http.get<any[]>(this.apiUrl + 'user/getAllUsers').pipe(
             catchError(error => {
                 console.error('Get Users error:', error);
+                return throwError(error);
+            })
+        );
+    }
+
+    // Users: update users
+    updateUser(id: number, data: any): Observable<any[]> {
+        return this.http.put<any[]>(this.apiUrl + 'user/{id}',data).pipe(
+            catchError(error => {
+                console.error('Get Users error:', error);
+                return throwError(error);
+            })
+        );
+    }
+
+    // user: Delete a user
+    deleteUser(id: number): Observable<any> {
+        return this.http.delete(this.apiUrl + `user/${id}`).pipe(
+            catchError(error => {
+                console.error('Delete user error:', error);
                 return throwError(error);
             })
         );

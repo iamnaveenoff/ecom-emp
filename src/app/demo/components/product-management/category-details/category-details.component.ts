@@ -14,7 +14,6 @@ import {Table, TableModule} from "primeng/table";
 import {ToastModule} from "primeng/toast";
 import {ToolbarModule} from "primeng/toolbar";
 import {Category} from "../../model/category.model";
-import {Product} from "../../model/product.model";
 import {ApiService} from "../../../service/api.service";
 
 @Component({
